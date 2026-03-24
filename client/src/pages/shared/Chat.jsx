@@ -20,7 +20,7 @@ const Chat = () => {
     fetchAllData();
     
     const selectedUserId = location.state?.selectedUserId;
-    if (selectedUserId && selectedUserId !== user?._id) {
+    if (selectedUserId) {
       setTimeout(() => {
         const foundConversation = conversations.find(c => c.user._id === selectedUserId);
         if (foundConversation) {
@@ -85,11 +85,7 @@ const Chat = () => {
   const fetchConversations = async () => {
     try {
       const response = await api.get('/chat/conversations');
-      // Фильтруем, чтобы исключить самого пользователя
-      const uniqueConversations = response.data.filter(chat => 
-        chat.user && chat.user._id !== user?._id
-      );
-      setConversations(uniqueConversations);
+      setConversations(response.data);
     } catch (error) {
       console.error('Ошибка загрузки чатов:', error);
     }
@@ -98,12 +94,10 @@ const Chat = () => {
   const fetchUserAndStartChat = async (userId) => {
     try {
       const response = await api.get(`/users/${userId}`);
-      if (response.data._id !== user?._id) {
-        const newConversation = { user: response.data, lastMessage: null, unread: false };
-        setConversations([newConversation, ...conversations]);
-        setSelectedChat(newConversation);
-        fetchMessages(userId);
-      }
+      const newConversation = { user: response.data, lastMessage: null, unread: false };
+      setConversations([newConversation, ...conversations]);
+      setSelectedChat(newConversation);
+      fetchMessages(userId);
     } catch (error) {
       console.error('Ошибка загрузки пользователя:', error);
     }

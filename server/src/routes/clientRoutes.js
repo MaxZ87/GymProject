@@ -58,12 +58,12 @@ router.delete('/remove-trainer/:trainerId', protect, async (req, res) => {
   }
 });
 
+// Маршруты для тренера
 router.get('/trainer/clients', protect, async (req, res) => {
   try {
     const relations = await ClientTrainer.find({ trainerId: req.user._id }).populate('clientId');
-    const filteredClients = relations.map(r => r.clientId).filter(client => client._id.toString() !== req.user._id.toString());
-    console.log('Клиенты тренера:', filteredClients.length);
-    res.json(filteredClients);
+    console.log('Клиенты тренера:', relations.length);
+    res.json(relations.map(r => r.clientId));
   } catch (error) {
     console.error('Ошибка загрузки клиентов:', error);
     res.status(500).json({ message: 'Ошибка сервера' });

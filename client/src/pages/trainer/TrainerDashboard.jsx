@@ -11,46 +11,22 @@ const TrainerDashboard = () => {
     trainings: 0,
     unreadMessages: 0
   });
-  const [loading, setLoading] = useState(true);
 
   const fetchStats = async () => {
     try {
-      // Получаем количество клиентов
-      let clientsCount = 0;
-      try {
-        const clientsRes = await api.get('/clients/trainer/clients/count');
-        clientsCount = clientsRes.data.count || 0;
-      } catch (err) {
-        console.error('Ошибка загрузки клиентов:', err);
-      }
-      
-      // Получаем количество тренировок
-      let trainingsCount = 0;
-      try {
-        const trainingsRes = await api.get('/trainings/count');
-        trainingsCount = trainingsRes.data.count || 0;
-      } catch (err) {
-        console.error('Ошибка загрузки тренировок:', err);
-      }
-      
-      // Получаем количество непрочитанных сообщений
-      let unreadMessages = 0;
-      try {
-        const unreadRes = await api.get('/chat/unread/count');
-        unreadMessages = unreadRes.data.count || 0;
-      } catch (err) {
-        console.error('Ошибка загрузки сообщений:', err);
-      }
+      const [clientsRes, trainingsRes, unreadRes] = await Promise.all([
+        api.get('/clients/trainer/clients/count'),
+        api.get('/trainings/trainer/count'),
+        api.get('/chat/unread/count')
+      ]);
       
       setStats({
-        clients: clientsCount,
-        trainings: trainingsCount,
-        unreadMessages: unreadMessages
+        clients: clientsRes.data.count,
+        trainings: trainingsRes.data.count,
+        unreadMessages: unreadRes.data.count
       });
     } catch (error) {
       console.error('Ошибка загрузки статистики:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -60,10 +36,6 @@ const TrainerDashboard = () => {
     const interval = setInterval(fetchStats, 5000);
     return () => clearInterval(interval);
   }, []);
-
-  if (loading) {
-    return <div className="text-center text-yellow-400">Загрузка...</div>;
-  }
 
   return (
     <div className="space-y-6">
@@ -76,7 +48,7 @@ const TrainerDashboard = () => {
         <Link to="/trainer/clients" className="card hover:scale-105 transition-transform">
           <div className="text-3xl mb-3">👥</div>
           <h3 className="font-semibold text-lg text-black">Мои клиенты</h3>
-          <p className="text-gray-600 text-sm mt-2">{stats.clients-1} клиентов</p>
+          <p className="text-gray-600 text-sm mt-2">{stats.clients} клиентов</p>
         </Link>
 
         <Link to="/trainer/trainings" className="card hover:scale-105 transition-transform">

@@ -38,7 +38,7 @@ router.get('/conversations', protect, async (req, res) => {
         ? msg.receiverId 
         : msg.senderId;
       
-      if (otherUser && otherUser._id.toString() !== req.user._id.toString() && !seen.has(otherUser._id.toString())) {
+      if (!seen.has(otherUser._id.toString())) {
         seen.add(otherUser._id.toString());
         conversations.push({
           user: otherUser,

@@ -72,12 +72,12 @@ router.get('/trainer', protect, async (req, res) => {
 });
 
 // Количество тренировок тренера
-router.get('/count', protect, async (req, res) => {
+router.get('/trainer/count', protect, async (req, res) => {
   try {
     const count = await Training.countDocuments({ createdBy: req.user._id });
     res.json({ count });
   } catch (error) {
-    console.error('Ошибка получения количества тренировок:', error);
+    console.error(error);
     res.status(500).json({ message: 'Ошибка сервера' });
   }
 });

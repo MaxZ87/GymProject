@@ -1,5 +1,5 @@
 {
-  "name": "database",
+  "name": "fitlife-database",
   "version": "1.0.0",
   "scripts": {
     "seed": "node seed.js"

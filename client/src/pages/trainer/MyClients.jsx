@@ -1,11 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
 import api from '../../api/axios';
 
 const MyClients = () => {
-  const { user } = useAuth();
   const [clients, setClients] = useState([]);
   const [selectedClient, setSelectedClient] = useState(null);
   const [clientProgress, setClientProgress] = useState([]);
@@ -26,10 +24,8 @@ const MyClients = () => {
     setLoading(true);
     try {
       const response = await api.get('/clients/trainer/clients');
-      // Фильтруем, чтобы исключить самого себя
-      const filteredClients = response.data.filter(client => client._id !== user?._id);
-      console.log('Мои клиенты:', filteredClients);
-      setClients(filteredClients);
+      console.log('Мои клиенты:', response.data);
+      setClients(response.data);
     } catch (error) {
       console.error('Ошибка загрузки клиентов:', error);
     } finally {

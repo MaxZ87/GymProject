@@ -26,8 +26,19 @@ const seedDatabase = async () => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash('password123', salt);
 
-    console.log('✅ Тренировки созданы');
+    // Создаем связи клиент-тренер
+    await ClientTrainer.create([{
+        clientId: users[0]._id,
+        trainerId: users[1]._id
+      },
+      {
+        clientId: users[3]._id,
+        trainerId: users[2]._id
+      }
+    ]);
 
+    console.log('✅ Связи клиент-тренер созданы');
+    console.log('🎉 База данных успешно заполнена!');
     console.log('📝 Данные для входа:');
     console.log('Клиент: client@test.com / password123');
     console.log('Тренер: trainer@test.com / password123');
